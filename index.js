@@ -25,7 +25,7 @@ app.use(express.json());
 app.use('/api', routes);
 
 app.get('/', function(req, res){
-    res.sendfile('./views/index.html');
+    res.sendFile('./views/index.html');
   });
 
   app.get("*", (req, res) => {
