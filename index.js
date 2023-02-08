@@ -26,7 +26,6 @@ app.use('/api', routes);
 
 app.get('/', function(req, res){
     res.sendfile('./views/index.html');
-    // res.send(routes);
   });
 
   app.get("*", (req, res) => {
