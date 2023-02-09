@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config();
 const routes = require('./routes/routes');
+const cors = require('cors');
 
 const mongoString = process.env.DATABASE_URL;
 const PORT = process.env.PORT || 3000
@@ -22,6 +23,7 @@ const app = express();
 
 
 app.use(express.json());
+app.use(cors());
 app.use('/api', routes);
 
 app.get('/', function(req, res){
