@@ -1,23 +1,29 @@
 const mongoose = require('mongoose');
 
 const dataSchema = new mongoose.Schema({
+    bookType: {
+        type: String,
+        enum: ['general', 'specialty'],
+    },
+    specialty: {
+        type: String,
+    },
     bookName: {
-        required: true,
         type: String,
     },
     schoolYear: {
-        required: true,
         type: Number,
     },
     yearOfIssue: {
-        required: true,
         type: Number,
     },
-    publishingHouse: {
-        required: true,
-        type: String,
-    },
     authors: [String],
+    pagesCount: {
+        type: Number,
+    },
+    exemplarsCount: {
+        type: Number,
+    }
 
 
 });
