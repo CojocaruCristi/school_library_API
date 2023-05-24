@@ -23,8 +23,8 @@ router.post('/post', async (req, res) => {
         ...req.body
     })
 
-    const duplicate = await Model.findOne({bookType: data.bookType, bookName: data.bookName});
-    if(!!duplicate.bookName) {
+    const duplicate = await Model.findOne({bookType: data.bookType, bookName: data.bookName, yearOfIssue: data.yearOfIssue});
+    if(!!duplicate?.bookName) {
         res.status(400).json({message: `Such book with name: [${duplicate.bookName}] already exists`});
     } else {
         try {
