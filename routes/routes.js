@@ -22,20 +22,30 @@ router.post('/post', async (req, res) => {
     const data = new Model({
         ...req.body
     })
-    try {
+
+    const duplicate = await Model.findOne({bookType: data.bookType, bookName: data.bookName});
+    if(!!duplicate.bookName) {
+        res.status(400).json({message: `Such book with name: [${duplicate.bookName}] already exists`});
+    } else {
+        try {
         const dataToSave = await data.save();
         res.status(200).json(dataToSave);
     } catch (error) {
         res.status(400).json({message: error});
     }
+    }
+
+    
 })
 
 router.get('/books', async (req, res) => {
     const bookType = req.query.bookType;
     const specialty = req.query.specialty;
-    const year = req.query.schoolYear;
+    const year = req.query.year;
 
-
+    console.log('booktype====>', bookType);
+    console.log('specialty=====>', specialty);
+    console.log('year=======>', year)
 
 
 
