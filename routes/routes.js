@@ -1,16 +1,42 @@
 const express = require('express');
-
-
 const router = express.Router();
 const Model = require('../models/model');
+const userModel = require('../models/user.model');
+const bcrypt = require('bcrypt'); 
 
 
 router.post('/createmany', async (req, res) => {
     const data = req.body.books;
+    const refactoredData = data.map(book => {
+        return {
+            ...book,
+            authors: [book.authors]
+        }
+    })
     try {
         // const dataToSave = await data.save();
         // res.status(200).json(dataToSave);
-        await Model.insertMany(data);
+        await Model.insertMany(refactoredData);
+        res.status(200).json(refactoredData).end();
+
+    } catch (error) {
+        res.status(400).json({message: error});
+    }
+})
+
+router.delete('/deletemany', async (req, res) => {
+    // const data = req.body.books;
+    // const refactoredData = data.map(book => {
+    //     return {
+    //         ...book,
+    //         authors: [book.authors]
+    //     }
+    // })
+    try {
+        // const dataToSave = await data.save();
+        // res.status(200).json(dataToSave);
+        // await Model.insertMany(refactoredData);
+        const result = await Model.deleteMany({specialty: 'Calclatoare'});
         res.status(200).end();
 
     } catch (error) {
@@ -42,12 +68,6 @@ router.get('/books', async (req, res) => {
     const bookType = req.query.bookType;
     const specialty = req.query.specialty;
     const year = req.query.year;
-
-    console.log('booktype====>', bookType);
-    console.log('specialty=====>', specialty);
-    console.log('year=======>', year)
-
-
 
     try {
         // const data = await Model.find();
@@ -86,15 +106,48 @@ router.patch('/update/:id', async (req, res) => {
     }
 })
 
-router.delete('/delete/:id', async (req, res) => {
+router.delete('/book/:id', async (req, res) => {
     try {
         const id = req.params.id;
         const data = await Model.findByIdAndDelete(id);
         
-        res.status(200).send(`Document with name "${data.name}" deleted successfully`);
+        res.status(200).send(`Document with name "${data.bookName}" deleted successfully`);
     } catch (error) {
         res.status(400).json({message: error});
     }
+})
+
+
+router.post('/user', async (req, res) => {
+
+    await userModel.create({ name: req.body.name, email: req.body.email, password: req.body.password }, function (err, result) {
+        if (err) 
+         next(err);
+        else
+         res.json({status: "success", message: "User added successfully!!!", data: null});
+        
+      });
+    
+})
+
+router.post('/authenticate', async (req, res) => {
+
+          userModel.findOne({email:req.body.email}, function(err, userInfo){
+        if (err) {
+         next(err);
+        } else if(userInfo === null) {
+            res.status(401).json({status:"error", message: "Invalid email/password!!!", data:null});
+        } else {
+        if(bcrypt.compareSync(req.body.password, userInfo.password)) {
+        res.json({status:"success", message: "user found!!!", data:{user: userInfo}});
+        }else{
+        res.status(401).json({status:"error", message: "Invalid email/password!!!", data:null});
+        }
+        }
+       });
+
+   
+    
 })
 
 
